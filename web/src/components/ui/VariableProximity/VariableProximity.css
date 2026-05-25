@@ -1,0 +1,22 @@
+.variable-proximity {
+  display: inline;
+  cursor: default;
+}
+
+.variable-proximity__space {
+  white-space: pre;
+}
+
+.variable-proximity__word {
+  display: inline-flex;
+}
+
+.variable-proximity__letter {
+  display: inline-block;
+  --vp-lift: 0;
+  --vp-strong: 1;
+  transform: translateY(calc(var(--vp-lift) * 1em));
+  opacity: calc(0.75 + var(--vp-strong) * 0.25);
+  transition: opacity 120ms linear, transform 120ms linear;
+  will-change: transform, opacity;
+}

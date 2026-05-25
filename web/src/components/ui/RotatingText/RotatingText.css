@@ -1,0 +1,33 @@
+.rotating-text {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  text-align: left;
+}
+
+.rotating-text__measure {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  height: 0;
+  overflow: hidden;
+}
+
+.rotating-text__slot {
+  display: inline-block;
+  position: relative;
+  vertical-align: bottom;
+}
+
+.rotating-text__word {
+  display: inline-block;
+  white-space: nowrap;
+}

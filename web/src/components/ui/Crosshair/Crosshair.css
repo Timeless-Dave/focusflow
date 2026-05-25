@@ -1,0 +1,48 @@
+.crosshair-mount {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.crosshair-mount--active .crosshair-lines {
+  opacity: 1;
+}
+
+.crosshair-lines {
+  opacity: 0;
+  transition: opacity 320ms ease;
+  position: absolute;
+  left: var(--ch-x);
+  top: var(--ch-y);
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+}
+
+.crosshair-lines::before,
+.crosshair-lines::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.crosshair-lines::before {
+  width: clamp(780px, 160vw, 2200px);
+  height: var(--ch-thick, 1px);
+  background: var(--ch-color, rgba(167, 139, 250, 0.35));
+  left: 0;
+  top: 0;
+  mix-blend-mode: multiply;
+}
+
+.crosshair-lines::after {
+  width: var(--ch-thick, 1px);
+  height: clamp(780px, 160vw, 2200px);
+  background: var(--ch-color, rgba(167, 139, 250, 0.35));
+  left: 0;
+  top: 0;
+  mix-blend-mode: multiply;
+}

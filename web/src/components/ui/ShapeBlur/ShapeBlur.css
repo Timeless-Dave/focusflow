@@ -1,0 +1,56 @@
+.shape-blur {
+  pointer-events: none;
+  position: absolute;
+  inset: -22% -12% auto;
+  height: clamp(420px, 58vw, 720px);
+  mix-blend-mode: multiply;
+  z-index: 0;
+}
+
+.landing-section--dark .shape-blur {
+  mix-blend-mode: screen;
+}
+
+.shape-blur__blob-a,
+.shape-blur__blob-b {
+  position: absolute;
+  border-radius: 48% 52% / 62% 38%;
+  filter: blur(68px);
+  inset: auto;
+}
+
+.shape-blur__blob-a {
+  background: radial-gradient(circle at 40% 40%, rgba(167, 139, 250, 0.8), transparent 72%);
+  width: clamp(340px, 58vw, 560px);
+  height: clamp(340px, 58vw, 560px);
+  left: -5%;
+  top: -22%;
+}
+
+.shape-blur__blob-b {
+  background: radial-gradient(circle at 35% 40%, rgba(196, 181, 253, 0.7), transparent 66%);
+  width: clamp(280px, 48vw, 440px);
+  height: clamp(280px, 48vw, 440px);
+  right: -8%;
+  top: 6%;
+  animation: shape-drift-b 34s ease-in-out infinite alternate;
+}
+
+@keyframes shape-drift-b {
+  from {
+    transform: translate3d(-4%, -2%, 0) rotate(-4deg);
+  }
+  to {
+    transform: translate3d(6%, 3%, 0) rotate(3deg);
+  }
+}
+
+.shape-blur__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  background-image: radial-gradient(currentColor 1px, transparent 0);
+  background-size: 14px 14px;
+  mix-blend-mode: soft-light;
+  color: #1e1e2e;
+}

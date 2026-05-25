@@ -1,0 +1,16 @@
+.text-pressure {
+  display: inline-block;
+  --tp-strain: 0;
+  --tp-tilt: 0deg;
+  font-variation-settings: 'wght' calc(760 + var(--tp-strain) * 80);
+  transform: skewX(var(--tp-tilt));
+  transition: transform 80ms linear, filter 120ms linear;
+  will-change: transform;
+}
+
+@supports not (font-variation-settings: 'wght' 760) {
+  .text-pressure {
+    font-weight: calc(740 + var(--tp-strain) * 120);
+    transform: skewX(var(--tp-tilt));
+  }
+}

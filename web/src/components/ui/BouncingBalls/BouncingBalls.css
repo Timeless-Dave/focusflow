@@ -1,0 +1,25 @@
+.bouncing-balls {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.bouncing-balls__bg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.bouncing-balls__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.bouncing-balls__canvas:active {
+  cursor: grabbing;
+}

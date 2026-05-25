@@ -1,0 +1,10 @@
+.splash-minimal {
+  background: rgba(253, 249, 243, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.splash-minimal__logo {
+  width: min(72px, 18vw);
+  height: auto;
+  filter: drop-shadow(0 8px 24px rgba(11, 18, 32, 0.1));
+}

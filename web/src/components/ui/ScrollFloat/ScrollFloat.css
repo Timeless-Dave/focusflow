@@ -1,0 +1,3 @@
+.scroll-float {
+  will-change: opacity, transform;
+}

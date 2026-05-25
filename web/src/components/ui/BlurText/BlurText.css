@@ -1,0 +1,7 @@
+.blur-text {
+  display: inline;
+}
+
+.blur-text__part {
+  display: inline-block;
+}

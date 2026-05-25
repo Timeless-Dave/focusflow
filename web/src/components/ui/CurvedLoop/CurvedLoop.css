@@ -1,0 +1,37 @@
+.curved-loop {
+  width: 100%;
+  color: var(--ink);
+}
+
+.curved-loop__mask {
+  position: relative;
+  margin: clamp(16px, 3vw, 28px) 0;
+  border-radius: 50% / 52%;
+  overflow: hidden;
+  height: clamp(54px, 10vw, 72px);
+  display: grid;
+  place-items: center;
+  opacity: 0.9;
+}
+
+.curved-loop__track {
+  display: flex;
+  width: max-content;
+  gap: clamp(44px, 8vw, 120px);
+  white-space: nowrap;
+  animation: curved-loop-slide 52s linear infinite;
+  font-size: clamp(13px, 1.85vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@keyframes curved-loop-slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.landing-section--dark .curved-loop__track {
+  color: rgba(255, 255, 255, 0.9);
+}

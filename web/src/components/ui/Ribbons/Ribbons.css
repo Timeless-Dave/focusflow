@@ -1,0 +1,10 @@
+.ribbons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--ribbon-opacity, 0.42);
+}
+
+.ribbons canvas {
+  opacity: inherit;
+}

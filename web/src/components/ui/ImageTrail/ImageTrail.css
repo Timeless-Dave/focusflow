@@ -1,0 +1,22 @@
+.image-trail {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+.image-trail__layer {
+  position: absolute;
+  inset: 0;
+}
+
+.image-trail__spot {
+  position: absolute;
+  top: -8%;
+  left: 0;
+  transform: translate3d(-50%, 0, 0) translateX(var(--ix));
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  border-radius: 18px;
+  background-size: cover;
+  filter: saturate(115%) brightness(1.06);
+}

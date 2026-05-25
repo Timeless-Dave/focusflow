@@ -1,0 +1,18 @@
+.click-spark.click-spark-page {
+  min-height: 100vh;
+}
+
+.click-spark {
+  position: relative;
+  isolation: isolate;
+}
+
+.click-spark__particle {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0.95;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+  z-index: 200;
+}

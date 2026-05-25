@@ -1,0 +1,131 @@
+.assistant-fab {
+  position: fixed;
+  right: clamp(16px, 3vw, 28px);
+  bottom: clamp(16px, 3vw, 28px);
+  z-index: 400;
+  width: clamp(72px, 14vw, 80px);
+  height: clamp(72px, 14vw, 80px);
+  border: 2.5px solid var(--ink, #0b1220);
+  border-radius: 50%;
+  background: var(--white, #fff);
+  box-shadow: 5px 5px 0 var(--lavender-deep, #b8b0e8);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+}
+
+.assistant-fab__ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(124, 58, 237, 0.35);
+  animation: assistant-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+.assistant-fab__logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+
+.assistant-fab__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 399;
+  background: rgba(11, 18, 32, 0.2);
+  border: none;
+  cursor: pointer;
+}
+
+.assistant-fab__panel {
+  position: fixed;
+  right: clamp(16px, 3vw, 28px);
+  bottom: calc(clamp(16px, 3vw, 28px) + 88px);
+  z-index: 401;
+  width: min(340px, calc(100vw - 32px));
+  padding: 20px;
+  border-radius: var(--radius, 16px);
+  border: 2px solid var(--ink, #0b1220);
+  background: var(--cream, #fdf9f3);
+  box-shadow: 6px 6px 0 var(--lavender-deep, #b8b0e8);
+}
+
+.assistant-fab__head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.assistant-fab__head img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.assistant-fab__head strong {
+  display: block;
+  font-size: 15px;
+}
+
+.assistant-fab__head p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--gray-500, #526077);
+}
+
+.assistant-fab__prompts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.assistant-fab__prompts button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid rgba(11, 18, 32, 0.12);
+  background: var(--white, #fff);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.assistant-fab__prompts button:hover {
+  border-color: var(--purple, #7c3aed);
+  background: var(--lavender-soft, #e8e2f8);
+}
+
+.assistant-fab__note {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--gray-500, #526077);
+  line-height: 1.5;
+}
+
+@keyframes assistant-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .assistant-fab__panel {
+    right: 16px;
+    left: 16px;
+    width: auto;
+  }
+}

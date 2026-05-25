@@ -1,0 +1,287 @@
+/* Auth panels + stepper theming */
+
+.auth-right--centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 4vw, 48px);
+}
+
+.auth-panel {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  border: 2px solid var(--ink);
+  background: var(--white);
+  box-shadow: 6px 6px 0 var(--lavender-deep);
+  overflow: hidden;
+}
+
+.auth-panel--wide {
+  max-width: 480px;
+}
+
+.auth-panel__blur {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 55%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.auth-panel__stripe {
+  height: 6px;
+  background: linear-gradient(90deg, var(--purple), var(--lavender), var(--orange));
+}
+
+.auth-panel__dots {
+  height: 48px;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(199, 193, 255, 0.55) 0 6px, transparent 7px),
+    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.35) 0 5px, transparent 6px),
+    radial-gradient(circle at 80% 50%, rgba(255, 214, 107, 0.55) 0 6px, transparent 7px);
+  border-bottom: 1px solid rgba(11, 18, 32, 0.06);
+}
+
+.auth-panel__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-panel--login .auth-panel__inner,
+.auth-panel--forgot .auth-panel__inner {
+  padding: 0;
+}
+
+.auth-panel--onboarding .auth-panel__inner {
+  padding: 0;
+}
+
+.auth-form--centered {
+  text-align: center;
+}
+
+.auth-form--centered label,
+.auth-form--centered .input-wrap,
+.auth-form--centered .form-row,
+.auth-form--centered .google-btn {
+  text-align: left;
+}
+
+.auth-form--centered h3,
+.auth-form--centered .subtitle {
+  text-align: center;
+}
+
+.auth-form--centered .auth-icon {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.auth-switch {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+.auth-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.auth-form--compact {
+  padding: 28px 24px 32px;
+}
+
+.auth-stepper-wrap {
+  padding: 8px 0 4px;
+}
+
+.auth-stepper-wrap .outer-container {
+  padding: 0;
+  min-height: auto;
+  aspect-ratio: unset;
+  width: 100%;
+}
+
+.focusflow-stepper.step-circle-container {
+  border: none !important;
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+  max-width: 100%;
+}
+
+.focusflow-stepper .step-indicator-row {
+  padding: 20px 24px 8px;
+  justify-content: center;
+}
+
+.focusflow-stepper .step-indicator-inner {
+  border: 2px solid var(--ink);
+}
+
+.focusflow-stepper .step-indicator .step-indicator-inner {
+  background: var(--white) !important;
+  color: var(--gray-500) !important;
+}
+
+.focusflow-stepper .step-indicator[style*="active"] .step-indicator-inner,
+.focusflow-stepper .step-indicator:has(.active-dot) .step-indicator-inner {
+  background: var(--purple) !important;
+  border-color: var(--purple);
+}
+
+.focusflow-stepper .step-connector {
+  background-color: var(--gray-200);
+}
+
+.focusflow-stepper-content {
+  min-height: 280px;
+}
+
+.focusflow-stepper .step-default {
+  padding: 8px 24px 0;
+}
+
+.focusflow-stepper-footer {
+  padding: 0 24px 24px;
+}
+
+.focusflow-stepper-footer .footer-nav {
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.stepper-back-btn {
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--gray-500);
+  cursor: pointer;
+  padding: 8px 4px;
+}
+
+.stepper-back-btn:hover {
+  color: var(--ink);
+}
+
+.stepper-next-btn {
+  border: 2px solid var(--ink) !important;
+  background: var(--purple) !important;
+  color: var(--white) !important;
+  font-weight: 600 !important;
+  padding: 10px 22px !important;
+  border-radius: var(--radius-pill) !important;
+  box-shadow: 3px 3px 0 var(--lavender-deep);
+  cursor: pointer;
+}
+
+.stepper-next-btn:hover {
+  transform: translate(-1px, -1px);
+}
+
+.step-panel h3 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.step-panel .step-lead {
+  color: var(--gray-500);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 20px;
+}
+
+.step-panel--center {
+  text-align: center;
+  padding: 16px 0 8px;
+}
+
+.step-panel--center label,
+.step-panel--center .input-wrap,
+.step-panel--center .role-grid,
+.step-panel--center .code-boxes {
+  text-align: left;
+}
+
+.step-panel--center .role-grid {
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.step-panel--center .code-boxes {
+  justify-content: center;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--white);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.role-card strong {
+  font-size: 14px;
+}
+
+.role-card span:last-child {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.role-card.active {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.role-icon {
+  font-size: 1.5rem;
+}
+
+.success-badge {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: var(--mint);
+  border: 2px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.accent {
+  color: var(--orange);
+}
+
+@media (max-width: 560px) {
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-panel,
+  .auth-panel--wide {
+    max-width: 100%;
+  }
+}

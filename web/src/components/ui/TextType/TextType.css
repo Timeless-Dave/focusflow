@@ -1,0 +1,24 @@
+.text-type {
+  display: inline-block;
+}
+
+.text-type__cursor {
+  display: inline-block;
+  width: 0.085em;
+  height: 0.95em;
+  margin-left: 0.04em;
+  margin-bottom: -0.1em;
+  background: currentColor;
+  animation-name: text-type-blink;
+  animation-timing-function: steps(2, jump-none);
+  animation-iteration-count: infinite;
+}
+
+@keyframes text-type-blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

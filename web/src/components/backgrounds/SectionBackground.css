@@ -1,0 +1,66 @@
+.section-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.section-bg--full-bleed {
+  width: 100%;
+}
+
+.section-bg__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.section-bg__canvas--interactive {
+  pointer-events: auto;
+}
+
+.section-bg__canvas--interactive .dot-grid__canvas {
+  pointer-events: auto;
+}
+
+.section-bg__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.section-bg__content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Section-specific overlay tints */
+.section-bg--hero .section-bg__overlay {
+  background: linear-gradient(
+    135deg,
+    rgba(253, 249, 243, 0.72) 0%,
+    rgba(253, 249, 243, 0.45) 50%,
+    rgba(253, 249, 243, 0.65) 100%
+  );
+}
+
+.section-bg--soft .section-bg__overlay {
+  background: rgba(253, 249, 243, 0.55);
+}
+
+.section-bg--dark .section-bg__overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(11, 18, 32, 0.92) 0%,
+    rgba(11, 18, 32, 0.75) 55%,
+    rgba(11, 18, 32, 0.5) 100%
+  );
+}
+
+.section-bg--warm .section-bg__overlay {
+  background: rgba(255, 242, 199, 0.5);
+}
+
+.section-bg--auth .section-bg__overlay {
+  background: rgba(232, 226, 248, 0.35);
+}
