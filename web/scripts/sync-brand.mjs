@@ -1,4 +1,5 @@
-import fs from 'fs/promises';
+import fs from 'fs';
+import fsPromises from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { execFileSync } from 'child_process';
@@ -30,21 +31,40 @@ const PARTNER_FALLBACKS = {
   'schoology.svg': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#E57200" d="M12 2C8 2 5 5.5 5 9.5c0 2.2 1 4.2 2.6 5.5L12 22l4.4-7c1.6-1.3 2.6-3.3 2.6-5.5C19 5.5 16 2 12 2zm0 3c2.8 0 5 2.4 5 5.5 0 1.4-.6 2.7-1.6 3.6L12 17.8 8.6 14c-1-1-1.6-2.2-1.6-3.6C7 7.4 9.2 5 12 5z"/></svg>`
 };
 
+const GENERATED_BRAND = [
+  'favicon.png',
+  'favicon-dark.png',
+  'logo-mark.png',
+  'logo-wordmark-clear.png',
+  'apple-icon.png',
+  'apple-icon-dark.png'
+];
+
+function brandAssetsReady() {
+  return GENERATED_BRAND.every((name) => fs.existsSync(path.join(SRC, name)));
+}
+
+function shouldGenerateBrand() {
+  if (process.env.SKIP_BRAND_GENERATE === '1') return false;
+  if (process.env.VERCEL === '1') return false;
+  return !brandAssetsReady();
+}
+
 async function syncPartners() {
   const dir = path.join(SRC, 'partners');
-  await fs.mkdir(dir, { recursive: true });
+  await fsPromises.mkdir(dir, { recursive: true });
 
   for (const partner of PARTNER_FETCH) {
     const dest = path.join(dir, partner.file);
     try {
       const res = await fetch(partner.url);
       if (!res.ok) throw new Error(`${res.status}`);
-      await fs.writeFile(dest, await res.text());
+      await fsPromises.writeFile(dest, await res.text());
       console.log('[sync-brand] partner', partner.file);
     } catch (err) {
       const fallback = PARTNER_FALLBACKS[partner.file];
       if (fallback) {
-        await fs.writeFile(dest, fallback);
+        await fsPromises.writeFile(dest, fallback);
         console.log('[sync-brand] partner fallback', partner.file);
       } else {
         console.warn('[sync-brand] partner fetch failed:', partner.file, err.message);
@@ -52,13 +72,13 @@ async function syncPartners() {
     }
   }
 
-  await fs.writeFile(path.join(dir, 'apptegy.svg'), APPTegy_SVG);
+  await fsPromises.writeFile(path.join(dir, 'apptegy.svg'), APPTegy_SVG);
   console.log('[sync-brand] partner apptegy.svg');
 }
 
 async function copyDir(src, dest) {
-  await fs.mkdir(dest, { recursive: true });
-  const entries = await fs.readdir(src, { withFileTypes: true });
+  await fsPromises.mkdir(dest, { recursive: true });
+  const entries = await fsPromises.readdir(src, { withFileTypes: true });
   for (const ent of entries) {
     if (SKIP_PUBLIC.has(ent.name)) continue;
     const s = path.join(src, ent.name);
@@ -66,28 +86,38 @@ async function copyDir(src, dest) {
     if (ent.isDirectory()) {
       await copyDir(s, d);
     } else {
-      await fs.copyFile(s, d);
+      await fsPromises.copyFile(s, d);
     }
   }
 }
 
-execFileSync(process.execPath, [path.join(__dirname, 'generate-favicon.mjs')], {
-  stdio: 'inherit'
-});
+if (shouldGenerateBrand()) {
+  execFileSync(process.execPath, [path.join(__dirname, 'generate-favicon.mjs')], {
+    stdio: 'inherit'
+  });
+} else {
+  const reason =
+    process.env.VERCEL === '1'
+      ? 'Vercel build'
+      : process.env.SKIP_BRAND_GENERATE === '1'
+        ? 'SKIP_BRAND_GENERATE'
+        : 'committed brand assets';
+  console.log('[sync-brand] skipping generate-favicon (' + reason + ')');
+}
 
 await syncPartners();
 await copyDir(SRC, PUBLIC);
 
 for (const stale of ['logo-wordmark.png', 'favicon-32.png']) {
   try {
-    await fs.unlink(path.join(PUBLIC, stale));
+    await fsPromises.unlink(path.join(PUBLIC, stale));
     console.log('[sync-brand] removed public/', stale);
   } catch {
     /* already absent */
   }
 }
 
-await fs.mkdir(APP, { recursive: true });
+await fsPromises.mkdir(APP, { recursive: true });
 for (const [srcName, destName] of [
   ['favicon.png', 'icon.png'],
   ['favicon-dark.png', 'icon-dark.png'],
@@ -95,7 +125,7 @@ for (const [srcName, destName] of [
 ]) {
   const srcPath = path.join(SRC, srcName);
   try {
-    await fs.copyFile(srcPath, path.join(APP, destName));
+    await fsPromises.copyFile(srcPath, path.join(APP, destName));
   } catch {
     /* optional asset */
   }

@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.12.1",
   "scripts": {
     "prebuild": "node scripts/sync-brand.mjs",
-    "prepare": "node scripts/sync-brand.mjs",
+    "sync-brand": "node scripts/sync-brand.mjs",
     "dev": "next dev",
     "dev:clean": "rm -rf .next && next dev",
     "build": "next build",
