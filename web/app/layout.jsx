@@ -34,9 +34,6 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preload" href="/brand/logo-mark.png" as="image" type="image/png" />
-      </head>
       <body className={inter.className} suppressHydrationWarning>
         {children}
       </body>

@@ -1,0 +1,499 @@
+/* ============================================================
+   FocusFlow — AI Lesson Studio
+   3 states: form → generating → success
+   ============================================================ */
+
+.ls-page {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+/* ── State transitions ── */
+.ls-state {
+  animation: ls-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ls-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Breadcrumb ── */
+.ls-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-bottom: 24px;
+}
+
+.ls-breadcrumb a {
+  color: var(--gray-400);
+  font-weight: 600;
+  transition: color 0.18s;
+}
+
+.ls-breadcrumb a:hover { color: var(--purple); }
+.ls-breadcrumb span   { font-weight: 600; color: var(--ink); }
+
+/* ── Form card ── */
+.ls-card {
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  padding: clamp(24px, 4vw, 40px);
+  box-shadow: 5px 5px 0 var(--lavender-deep);
+  position: relative;
+  overflow: hidden;
+}
+
+.ls-card::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--lavender-soft);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.ls-header {
+  margin-bottom: 28px;
+}
+
+.ls-header h1 {
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 12px 0 6px;
+  line-height: 1.2;
+}
+
+.ls-header p {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ── Form grid ── */
+.ls-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.ls-form-grid .ls-field--full {
+  grid-column: 1 / -1;
+}
+
+.ls-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ls-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-500);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ls-label-req {
+  color: var(--purple);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ls-input,
+.ls-select,
+.ls-textarea {
+  padding: 11px 13px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: var(--font);
+  background: var(--white);
+  color: var(--ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.ls-input:focus,
+.ls-select:focus,
+.ls-textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.ls-textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.ls-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.ls-hint {
+  font-size: 11px;
+  color: var(--gray-400);
+  margin: 0;
+}
+
+/* ── Toggle chip group (learning styles, ADHD types) ── */
+.ls-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ls-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--gray-500);
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  user-select: none;
+}
+
+.ls-chip:hover {
+  border-color: var(--lavender-deep);
+  background: var(--lavender-soft);
+  color: var(--ink);
+}
+
+.ls-chip--active {
+  background: var(--lavender);
+  border-color: var(--purple);
+  color: var(--ink);
+}
+
+/* ── Divider ── */
+.ls-divider {
+  height: 1px;
+  background: rgba(11, 18, 32, 0.07);
+  margin: 24px 0;
+}
+
+/* ── Error ── */
+.ls-error {
+  padding: 10px 14px;
+  border: 2px solid #fca5a5;
+  border-radius: 10px;
+  background: #fff1f2;
+  color: #e11d48;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* ── Submit row ── */
+.ls-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.ls-submit-note {
+  font-size: 12px;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Generating state ── */
+.ls-generating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 32px;
+  min-height: 420px;
+  gap: 28px;
+}
+
+.ls-generating__orbit {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.ls-generating__core {
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--lavender-soft);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  animation: ls-pulse-core 2.2s ease-in-out infinite;
+}
+
+@keyframes ls-pulse-core {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0   0 rgba(124,58,237,0); }
+  50%       { transform: scale(1.08); box-shadow: 0 0 18px 6px rgba(124,58,237,0.2); }
+}
+
+.ls-generating__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid var(--lavender-deep);
+  border-top-color: var(--purple);
+  animation: ls-spin 1.4s linear infinite;
+}
+
+.ls-generating__ring--2 {
+  inset: 6px;
+  border-top-color: var(--lavender-deep);
+  border-right-color: var(--purple);
+  animation-duration: 2.1s;
+  animation-direction: reverse;
+  opacity: 0.55;
+}
+
+@keyframes ls-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ls-generating h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.ls-generating__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.ls-generating__step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(11, 18, 32, 0.07);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-500);
+  transition: background 0.4s, color 0.3s;
+}
+
+.ls-generating__step--active {
+  background: var(--lavender-soft);
+  color: var(--purple);
+  border-color: rgba(124,58,237,0.2);
+}
+
+.ls-generating__step--done {
+  background: var(--mint);
+  color: #065f46;
+  border-color: rgba(6,95,70,0.15);
+}
+
+.ls-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.ls-generating__step--active .ls-step-dot {
+  animation: ls-pulse-dot 1s ease-in-out infinite;
+}
+
+@keyframes ls-pulse-dot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+}
+
+.ls-generating p {
+  color: var(--gray-500);
+  font-size: 14px;
+  margin: 0;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* ── Success state ── */
+.ls-success {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ls-success__badge {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 14px;
+  border: 2px solid var(--ink);
+  background: linear-gradient(135deg, var(--mint) 0%, rgba(184,245,212,0.4) 100%);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.ls-success__check {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--white);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  animation: ls-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes ls-pop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.ls-success__badge-text h3 {
+  margin: 0 0 3px;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.ls-success__badge-text p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--gray-500);
+}
+
+/* Lesson overview preview */
+.ls-overview {
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.ls-overview__header {
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--ink);
+  background: var(--lavender-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ls-overview__header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.ls-overview__body {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ls-overview__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.ls-overview__key {
+  font-weight: 700;
+  color: var(--gray-500);
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.ls-overview__val {
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+/* Segments preview */
+.ls-segments {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ls-segment-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(11,18,32,0.1);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 12px;
+}
+
+.ls-segment-chip__type {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+.ls-segment-chip__type--visual     { background: var(--lavender-soft); color: var(--purple); }
+.ls-segment-chip__type--auditory   { background: var(--peach);          color: #92400e; }
+.ls-segment-chip__type--kinesthetic { background: var(--mint);           color: #065f46; }
+.ls-segment-chip__type--mixed       { background: var(--yellow-soft);    color: #78350f; }
+
+/* CTA row */
+.ls-cta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Responsive */
+@media (max-width: 620px) {
+  .ls-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ls-cta-row {
+    grid-template-columns: 1fr;
+  }
+}

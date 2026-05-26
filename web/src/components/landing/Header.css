@@ -17,68 +17,162 @@
 }
 
 .header-brand__mark {
-  width: clamp(36px, 5vw, 42px);
-  height: clamp(36px, 5vw, 42px);
+  width: clamp(34px, 5vw, 40px);
+  height: clamp(34px, 5vw, 40px);
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .header-brand__name {
-  font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
 
-.header-brand__accent {
-  color: var(--orange);
-}
+.header-brand__accent { color: var(--orange); }
 
-.focusflow-header .site-nav {
-  flex: 1;
+/* ── Desktop nav ── */
+.hdr-nav {
   display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
   justify-content: center;
   min-width: 0;
 }
 
+.hdr-nav__item {
+  position: relative;
+}
+
+.hdr-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 13px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.18s, background 0.18s;
+  white-space: nowrap;
+}
+.hdr-nav__link:hover { color: var(--ink); background: rgba(199,193,255,0.3); }
+.hdr-nav__link.is-active { color: var(--ink); background: var(--white); box-shadow: 0 0 0 1.5px rgba(11,18,32,0.1); }
+
+.hdr-caret {
+  opacity: 0.6;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.hdr-caret--open { transform: rotate(180deg); }
+
+/* ── Dropdown panel ── */
+.hdr-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  min-width: 200px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 5px 5px 0 var(--lavender-deep);
+  padding: 6px;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s, transform 0.18s;
+}
+
+.hdr-dropdown--open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+
+.hdr-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.hdr-dropdown__item:hover { background: var(--lavender-soft); color: var(--purple); }
+
+.hdr-dropdown__icon { font-size: 15px; flex-shrink: 0; }
+
+/* ── CTA area ── */
 .focusflow-header .header-cta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
-@media (max-width: 980px) {
-  .focusflow-header .header-cta .btn.text {
-    display: none;
-  }
-
-  .header-brand__name {
-    font-size: 1rem;
-  }
+/* Mobile toggle — hidden on desktop */
+.hdr-mobile-toggle {
+  display: none;
+  border: 2px solid var(--ink);
+  border-radius: 9px;
+  background: var(--white);
+  padding: 6px;
+  cursor: pointer;
+  place-items: center;
 }
 
-@media (max-width: 768px) {
-  .focusflow-header .header-inner--pill {
-    flex-wrap: wrap;
-    padding-right: 88px;
-  }
+/* ── Mobile drawer ── */
+.hdr-mobile-drawer {
+  border-top: 2px solid rgba(11,18,32,0.08);
+  padding: 12px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-  .focusflow-header .site-nav {
-    order: 3;
-    flex: 1 1 100%;
-    justify-content: flex-start;
-  }
+.hdr-mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background 0.15s;
+}
+.hdr-mobile-link:hover { background: var(--lavender-soft); color: var(--purple); }
 
-  .focusflow-header .header-cta {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-  }
+.hdr-mobile-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px 0;
+  border-top: 1px solid rgba(11,18,32,0.07);
+  margin-top: 10px;
+}
 
-  .focusflow-header .header-cta .btn.primary {
-    padding: 8px 14px;
-    font-size: 13px;
-  }
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .hdr-nav { display: none; }
+  .hdr-mobile-toggle { display: grid; }
+  .focusflow-header .header-cta .btn.text { display: none; }
+  .focusflow-header .header-cta .btn.primary { display: none; }
+}
+
+@media (max-width: 480px) {
+  .header-brand__name { display: none; }
 }

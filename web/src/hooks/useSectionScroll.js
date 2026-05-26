@@ -8,10 +8,14 @@ export function useSectionScroll(pathname, enabled = true) {
     const sectionId = SECTION_ROUTES[pathname];
     if (!sectionId) return;
 
-    const frame = requestAnimationFrame(() => {
-      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Double-rAF: ensures React has finished painting before scroll
+    let f1, f2;
+    f1 = requestAnimationFrame(() => {
+      f2 = requestAnimationFrame(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      });
     });
 
-    return () => cancelAnimationFrame(frame);
+    return () => { cancelAnimationFrame(f1); cancelAnimationFrame(f2); };
   }, [pathname, enabled]);
 }

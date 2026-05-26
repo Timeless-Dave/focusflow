@@ -20,12 +20,56 @@ import {
   subscribeTextType
 } from '@/config';
 
+import { useState } from 'react';
 import { useScrollReveal } from '@/hooks/useEffects';
 import { routes } from '@/lib/routes';
 
 import BouncingBalls from '../ui/BouncingBalls/BouncingBalls';
 import AnimatedHero from './AnimatedHero';
 import './LandingPage.css';
+
+function SubscribeForm() {
+  const [email, setEmail]     = useState('');
+  const [status, setStatus]   = useState('idle'); // idle | loading | success | error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'landing' })
+      });
+      setStatus(res.ok ? 'success' : 'error');
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return <p className="sub-success">You&apos;re on the list — we&apos;ll be in touch soon!</p>;
+  }
+
+  return (
+    <form className="sub-form sub-form--large" onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Enter your email address"
+        aria-label="Email address"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        required
+        disabled={status === 'loading'}
+      />
+      <button className="btn lavender" type="submit" disabled={status === 'loading'}>
+        {status === 'loading' ? 'Sending…' : 'Send now'}
+      </button>
+      {status === 'error' && <p className="sub-error">Something went wrong. Please try again.</p>}
+    </form>
+  );
+}
 
 export default function LandingPage({ onAuth, hidden = false }) {
   useScrollReveal('.reveal', !hidden);
@@ -245,12 +289,7 @@ export default function LandingPage({ onAuth, hidden = false }) {
                   <TextType text={subscribeTextType.text} charDelayMs={subscribeTextType.charDelayMs} cursorBlinkMs={subscribeTextType.cursorBlinkMs} />
                 </p>
               </div>
-              <form className="sub-form sub-form--large" onSubmit={e => e.preventDefault()}>
-                <input type="email" placeholder="Enter your email address" aria-label="Email address" />
-                <button className="btn lavender" type="submit">
-                  Send now
-                </button>
-              </form>
+              <SubscribeForm />
             </div>
           </section>
         </div>

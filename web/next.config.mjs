@@ -6,8 +6,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig = {
   reactStrictMode: true,
+  devIndicators: false,
   transpilePackages: ['three'],
-  webpack: (config, { isServer }) => {
+  async redirects() {
+    return [
+      { source: '/bot', destination: '/dashboard/bot', permanent: false },
+      { source: '/bot/:path*', destination: '/dashboard/bot', permanent: false }
+    ];
+  },
+  webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -17,7 +24,8 @@ const nextConfig = {
     };
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './src'),
+      '@lib': path.resolve(__dirname, './lib')
     };
     return config;
   }

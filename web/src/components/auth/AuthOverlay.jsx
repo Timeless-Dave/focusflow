@@ -1,13 +1,15 @@
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@lib/supabase/client';
 import { Stepper, Step, ShapeBlur } from '../ui';
 import { GridScan, PixelSnow, ShapeGrid } from '../backgrounds';
 import { backgroundPresets } from '../backgrounds/presets';
 import { brandPaths } from '@/config';
 import './auth.css';
 
-function GoogleButton() {
+function GoogleButton({ onClick }) {
   return (
-    <button className="google-btn" type="button">
+    <button className="google-btn" type="button" onClick={onClick}>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -66,33 +68,90 @@ function AuthVisualPanel({ variant, title, illustration }) {
 }
 
 export function LoginPanel({ onAuth }) {
+  const router = useRouter();
+  const [form, setForm] = useState({ email: '', password: '', remember: false });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    const supabase = createClient();
+    const { error: sbErr } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password
+    });
+    setLoading(false);
+    if (sbErr) {
+      setError(sbErr.message);
+    } else {
+      router.push('/dashboard');
+    }
+  };
+
+  const handleGoogle = async () => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/api/auth/callback` }
+    });
+  };
+
   return (
     <div className="auth-page auth-page--flipped">
       <div className="auth-right auth-right--centered">
         <AuthPanel variant="login">
-          <div className="auth-form auth-form--compact auth-form--centered">
+          <form className="auth-form auth-form--compact auth-form--centered" onSubmit={handleSignIn}>
             <div className="auth-icon" aria-hidden="true">▶</div>
             <h3>Welcome back</h3>
             <p className="subtitle">Sign in to your teacher dashboard</p>
+            {error && <p className="auth-error">{error}</p>}
             <label htmlFor="login-email">Email address</label>
             <div className="input-wrap">
-              <input id="login-email" className="input" type="email" placeholder="name@email.com" autoComplete="email" />
+              <input
+                id="login-email"
+                className="input"
+                type="email"
+                placeholder="name@email.com"
+                autoComplete="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
             </div>
             <label htmlFor="login-password">Password</label>
             <div className="input-wrap">
-              <input id="login-password" className="input password" type="password" placeholder="••••••••" autoComplete="current-password" />
+              <input
+                id="login-password"
+                className="input password"
+                type="password"
+                placeholder="••••••••"
+                autoComplete="current-password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                required
+              />
             </div>
             <div className="form-row">
-              <label><input type="checkbox" /> Remember me</label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={form.remember}
+                  onChange={(e) => setForm({ ...form, remember: e.target.checked })}
+                /> Remember me
+              </label>
               <button type="button" className="link-btn" onClick={() => onAuth('forgot')}>Forgot password?</button>
             </div>
-            <button className="btn auth-primary" type="button">Sign In</button>
+            <button className="btn auth-primary" type="submit" disabled={loading}>
+              {loading ? 'Signing in…' : 'Sign In'}
+            </button>
             <p className="auth-switch">
               New user? <button type="button" className="link-btn" onClick={() => onAuth('onboarding')}>Create account</button>
             </p>
             <div className="divider">Or</div>
-            <GoogleButton />
-          </div>
+            <GoogleButton onClick={handleGoogle} />
+          </form>
         </AuthPanel>
       </div>
       <AuthVisualPanel
@@ -105,23 +164,64 @@ export function LoginPanel({ onAuth }) {
 }
 
 export function ForgotPasswordPanel({ onAuth }) {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleReset = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    const supabase = createClient();
+    const { error: sbErr } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/dashboard/reset-password`
+    });
+    setLoading(false);
+    if (sbErr) {
+      setError(sbErr.message);
+    } else {
+      setSent(true);
+    }
+  };
+
   return (
     <div className="auth-page auth-page--flipped">
       <div className="auth-right auth-right--centered">
         <AuthPanel variant="forgot">
-          <div className="auth-form auth-form--compact auth-form--centered">
+          <form className="auth-form auth-form--compact auth-form--centered" onSubmit={handleReset}>
             <div className="auth-icon" aria-hidden="true">✉</div>
             <h3>Reset your password</h3>
-            <p className="subtitle">Enter the email linked to your account and we&apos;ll send reset instructions.</p>
-            <label htmlFor="forgot-email">Email address</label>
-            <div className="input-wrap">
-              <input id="forgot-email" className="input" type="email" placeholder="name@email.com" autoComplete="email" />
-            </div>
-            <button className="btn auth-primary" type="button">Send reset link</button>
+            <p className="subtitle">
+              {sent
+                ? 'Check your inbox — reset instructions are on their way.'
+                : 'Enter the email linked to your account and we\'ll send reset instructions.'}
+            </p>
+            {error && <p className="auth-error">{error}</p>}
+            {!sent && (
+              <>
+                <label htmlFor="forgot-email">Email address</label>
+                <div className="input-wrap">
+                  <input
+                    id="forgot-email"
+                    className="input"
+                    type="email"
+                    placeholder="name@email.com"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <button className="btn auth-primary" type="submit" disabled={loading}>
+                  {loading ? 'Sending…' : 'Send reset link'}
+                </button>
+              </>
+            )}
             <p className="auth-switch">
               Remember your password? <button type="button" className="link-btn" onClick={() => onAuth('login')}>Sign in</button>
             </p>
-          </div>
+          </form>
         </AuthPanel>
       </div>
       <AuthVisualPanel
@@ -134,9 +234,12 @@ export function ForgotPasswordPanel({ onAuth }) {
 }
 
 export function OnboardingPanel({ onAuth, onComplete }) {
+  const router = useRouter();
   const [role, setRole] = useState('teacher');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const maskedEmail = form.email
     ? `${form.email.slice(0, 3)}••••@${form.email.split('@')[1] || 'gmail.com'}`
@@ -147,6 +250,65 @@ export function OnboardingPanel({ onAuth, onComplete }) {
     const next = [...code];
     next[index] = digit;
     setCode(next);
+    // Auto-focus next input
+    if (digit && index < 5) {
+      const nextEl = document.getElementById(`otp-${index + 1}`);
+      nextEl?.focus();
+    }
+  };
+
+  const handleSignUp = async () => {
+    setError('');
+    setLoading(true);
+    const supabase = createClient();
+    const { error: sbErr } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        data: { full_name: form.name, role },
+        emailRedirectTo: `${window.location.origin}/api/auth/callback`
+      }
+    });
+    setLoading(false);
+    if (sbErr) {
+      setError(sbErr.message);
+      return false;
+    }
+    return true;
+  };
+
+  const handleVerifyOtp = async () => {
+    setError('');
+    setLoading(true);
+    const token = code.join('');
+    const supabase = createClient();
+    const { error: sbErr } = await supabase.auth.verifyOtp({
+      email: form.email,
+      token,
+      type: 'email'
+    });
+    setLoading(false);
+    if (sbErr) {
+      setError(sbErr.message);
+      return false;
+    }
+    return true;
+  };
+
+  const handleGoogle = async () => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback`,
+        queryParams: { role }
+      }
+    });
+  };
+
+  const handleComplete = () => {
+    router.push('/dashboard');
+    onComplete?.();
   };
 
   return (
@@ -159,16 +321,30 @@ export function OnboardingPanel({ onAuth, onComplete }) {
       <div className="auth-right auth-right--centered">
         <AuthPanel variant="onboarding" wide>
           <div className="auth-stepper-wrap">
+            {error && <p className="auth-error auth-error--global">{error}</p>}
             <Stepper
               initialStep={1}
               backButtonText="Previous"
               nextButtonText="Continue"
-              onFinalStepCompleted={onComplete}
+              onFinalStepCompleted={handleComplete}
               stepCircleContainerClassName="focusflow-stepper"
               contentClassName="focusflow-stepper-content"
               footerClassName="focusflow-stepper-footer"
               backButtonProps={{ className: 'stepper-back-btn' }}
-              nextButtonProps={{ className: 'stepper-next-btn' }}
+              nextButtonProps={{ className: 'stepper-next-btn', disabled: loading }}
+              onStepChange={async (from, to) => {
+                // Moving from step 2 → 3 triggers sign-up
+                if (from === 2 && to === 3) {
+                  const ok = await handleSignUp();
+                  if (!ok) return false;
+                }
+                // Moving from step 3 → 4 verifies OTP
+                if (from === 3 && to === 4) {
+                  const ok = await handleVerifyOtp();
+                  if (!ok) return false;
+                }
+                return true;
+              }}
             >
               <Step>
                 <div className="step-panel step-panel--center">
@@ -234,14 +410,14 @@ export function OnboardingPanel({ onAuth, onComplete }) {
                       id="ob-password"
                       className="input"
                       type="password"
-                      placeholder="Create a password"
+                      placeholder="Create a password (8+ chars)"
                       value={form.password}
                       onChange={(e) => setForm({ ...form, password: e.target.value })}
                       autoComplete="new-password"
                     />
                   </div>
                   <div className="divider">Or</div>
-                  <GoogleButton />
+                  <GoogleButton onClick={handleGoogle} />
                   <p className="auth-switch">
                     Already have an account? <button type="button" className="link-btn" onClick={() => onAuth('login')}>Sign in</button>
                   </p>
@@ -257,6 +433,7 @@ export function OnboardingPanel({ onAuth, onComplete }) {
                     {code.map((digit, i) => (
                       <input
                         key={i}
+                        id={`otp-${i}`}
                         maxLength={1}
                         inputMode="numeric"
                         pattern="[0-9]"
@@ -266,7 +443,19 @@ export function OnboardingPanel({ onAuth, onComplete }) {
                       />
                     ))}
                   </div>
-                  <p className="auth-switch">Didn&apos;t receive a code? <a className="link" href="#">Resend</a></p>
+                  <p className="auth-switch">
+                    Didn&apos;t receive a code?{' '}
+                    <button
+                      type="button"
+                      className="link"
+                      onClick={async () => {
+                        const supabase = createClient();
+                        await supabase.auth.resend({ type: 'signup', email: form.email });
+                      }}
+                    >
+                      Resend
+                    </button>
+                  </p>
                 </div>
               </Step>
 

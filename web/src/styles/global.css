@@ -12,9 +12,11 @@
   --navy: #0b1220;
   --purple: #7c3aed;
   --orange: #f97316;
+  --gray-600: #475569;
   --gray-500: #64748b;
   --gray-400: #94a3b8;
   --gray-200: #e5e7eb;
+  --gray-100: #f1f5f9;
   --white: #ffffff;
   --shadow: 4px 4px 0 var(--lavender-deep);
   --radius: 12px;
@@ -69,39 +71,8 @@ input {
   overflow-x: clip;
 }
 
-/* ── Splash (transparent overlay — macOS-style boot) ── */
-.splash-screen,
-#splash {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  pointer-events: none;
-  will-change: opacity;
-}
-
-.splash-logo {
-  display: block;
-  width: min(88px, 22vw);
-  height: auto;
-  margin: 0 auto;
-  filter: drop-shadow(0 8px 28px rgba(11, 18, 32, 0.12));
-}
-
-body.splash-active .page--loading {
-  pointer-events: none;
-}
-
 .page--ready {
   pointer-events: auto;
-}
-
-body.page-ready .hero.reveal {
-  opacity: 1;
-  transform: none;
 }
 
 .site-header-sticky {
@@ -114,7 +85,6 @@ body.page-ready .hero.reveal {
   transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
 }
 
-body:not(.splash-active) .site-header-sticky:has(.site-header.scrolled),
 .site-header-sticky:has(.site-header.scrolled) {
   background: rgba(253, 249, 243, 0.94);
   border-bottom-color: rgba(11, 18, 32, 0.06);
