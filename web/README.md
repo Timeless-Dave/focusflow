@@ -5,11 +5,26 @@ Next.js **15**, React **19**, **`pnpm`**.
 ## Scripts
 
 ```bash
-pnpm install    # prepare → sync-brand (regenerates favicons + copies assets)
+pnpm install
 pnpm dev        # http://localhost:3000
-pnpm build
+pnpm sync-brand # optional: regenerate favicons + copy assets locally
+pnpm build      # prebuild → sync-brand (skips Python on Vercel)
 pnpm start
 ```
+
+## Deploy (Vercel)
+
+1. Import the GitHub repo in Vercel.
+2. Set **Root Directory** to `web`.
+3. Add environment variables (see `.env.example`):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `OPENAI_API_KEY`
+4. In **Supabase → Authentication → URL Configuration**, add redirect URLs:
+   - `http://localhost:3000/api/auth/callback`
+   - `https://<your-vercel-domain>/api/auth/callback`
+5. Deploy. Build log should include: `[sync-brand] skipping generate-favicon (Vercel build)`.
 
 ## Paths & conventions
 
