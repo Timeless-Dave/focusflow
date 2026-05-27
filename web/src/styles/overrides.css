@@ -339,11 +339,12 @@
   .auth-page--onboarding .auth-right--centered {
     align-items: flex-start;
     justify-content: flex-start;
-    padding-top: clamp(148px, 32vw, 200px);
+    padding-top: clamp(188px, 40vw, 240px);
   }
 
   .auth-page--onboarding .auth-visual-content h2 {
     max-width: min(320px, 88vw);
+    margin-bottom: 12px;
   }
 }
 
@@ -389,7 +390,7 @@
 
   .auth-page--onboarding .auth-right,
   .auth-page--onboarding .auth-right--centered {
-    padding-top: clamp(136px, 34vw, 172px);
+    padding-top: clamp(180px, 46vw, 220px);
   }
 
   .auth-error--global {
