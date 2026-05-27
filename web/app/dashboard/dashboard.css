@@ -27,7 +27,7 @@
 }
 
 .db-sidebar--collapsed {
-  width: 72px;
+  width: 68px;
 }
 
 /* Brand row — holds logo + collapse toggle side by side */
@@ -97,11 +97,11 @@
 /* ── Collapsed sidebar ── */
 .db-sidebar--collapsed .db-sidebar__brand-row {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 10px 4px 8px;
+  gap: 6px;
+  padding: 10px 6px 8px;
 }
 
 .db-sidebar--collapsed .db-sidebar__brand {
@@ -109,6 +109,7 @@
   flex: none;
   width: auto;
   min-width: 0;
+  justify-content: center;
 }
 
 .db-sidebar--collapsed .db-sidebar__brand-name {
@@ -117,8 +118,8 @@
 
 .db-sidebar--collapsed .db-sidebar__toggle {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
 }
 
@@ -127,34 +128,58 @@
 }
 
 .db-sidebar--collapsed .db-bot-card-wrap {
-  padding: 8px 0 4px;
+  padding: 8px 6px 4px;
+  display: flex;
+  justify-content: center;
 }
 
 .db-sidebar--collapsed .db-bot-card {
   justify-content: center;
-  padding: 10px 0;
-  margin: 0 auto;
-  width: calc(100% - 12px);
-  max-width: 52px;
+  padding: 8px;
+  margin: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
 }
 
 .db-sidebar--collapsed .db-nav {
-  padding: 10px 6px;
+  padding: 8px 6px;
+  align-items: center;
+}
+
+.db-sidebar--collapsed .db-nav__section-label {
+  display: none;
 }
 
 .db-sidebar--collapsed .db-nav__item {
   justify-content: center;
-  padding: 8px 0;
+  width: 44px;
+  padding: 4px 0;
+  gap: 0;
+  margin: 0 auto;
+}
+
+.db-sidebar--collapsed .db-nav__label {
+  display: none;
 }
 
 .db-sidebar--collapsed .db-profile-chip,
 .db-sidebar--collapsed .db-signout-btn {
   justify-content: center;
-  padding: 8px 0;
+  width: 44px;
+  padding: 6px 0;
+  gap: 0;
+  margin: 0 auto;
 }
 
 .db-sidebar--collapsed .db-sidebar__bottom {
   padding: 10px 6px;
+  align-items: center;
+}
+
+.db-sidebar--collapsed .db-profile-info,
+.db-sidebar--collapsed .db-signout-label {
+  display: none;
 }
 
 /* ── Bot promo card ── */
@@ -196,7 +221,7 @@
   transition: opacity 0.15s, max-width 0.28s;
   max-width: 200px;
 }
-.db-sidebar--collapsed .db-bot-card__text { opacity: 0; max-width: 0; }
+.db-sidebar--collapsed .db-bot-card__text { display: none; }
 
 .db-bot-card__title { font-size: 13px; font-weight: 800; white-space: nowrap; }
 .db-bot-card__sub   { font-size: 11px; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -223,7 +248,6 @@
   opacity: 1;
   transition: opacity 0.15s;
 }
-.db-sidebar--collapsed .db-nav__section-label { opacity: 0; }
 
 .db-nav__item {
   display: flex;
@@ -270,7 +294,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.db-sidebar--collapsed .db-nav__label { opacity: 0; width: 0; }
+.db-sidebar--collapsed .db-nav__label { display: none; }
 
 /* ── Animated nav icons ── */
 
@@ -379,7 +403,7 @@
 }
 
 .db-profile-info { overflow: hidden; opacity: 1; transition: opacity 0.15s; }
-.db-sidebar--collapsed .db-profile-info { opacity: 0; width: 0; }
+.db-sidebar--collapsed .db-profile-info { display: none; }
 
 .db-profile-name {
   font-size: 13px;
@@ -414,7 +438,7 @@
 .db-signout-icon svg { width: 18px; height: 18px; }
 
 .db-signout-label { opacity: 1; transition: opacity 0.15s; }
-.db-sidebar--collapsed .db-signout-label { opacity: 0; width: 0; }
+.db-sidebar--collapsed .db-signout-label { display: none; }
 
 /* ── Main area ── */
 .db-main {
@@ -427,7 +451,7 @@
   flex-direction: column;
   transition: margin-left 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.db-main--sidebar-collapsed { margin-left: 72px; }
+.db-main--sidebar-collapsed { margin-left: 68px; }
 
 /* ── Top bar ── */
 .db-topbar {
@@ -877,8 +901,28 @@
   .db-sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.28s;
+    width: min(260px, 85vw);
+    z-index: 110;
   }
-  .db-sidebar--mobile-open { transform: translateX(0); width: 240px !important; }
+
+  .db-sidebar--mobile-open {
+    transform: translateX(0);
+    width: min(260px, 85vw) !important;
+  }
+
+  .db-sidebar__toggle {
+    display: none !important;
+  }
+
+  .db-sidebar__brand-row {
+    grid-template-columns: 1fr;
+    padding: 14px 16px;
+  }
+
+  .db-sidebar__brand {
+    padding: 0;
+  }
+
   .db-main { margin-left: 0 !important; }
   .db-topbar {
     padding: 10px 14px;
@@ -909,10 +953,41 @@
 }
 
 @media (max-width: 560px) {
-  .db-stat-grid { grid-template-columns: 1fr; }
+  .db-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .db-stat-card {
+    padding: 12px 14px;
+    gap: 6px;
+  }
+
+  .db-stat-card__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .db-stat-card__icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .db-stat-card__value {
+    font-size: 1.35rem;
+  }
+
+  .db-stat-card__label {
+    font-size: 10px;
+  }
+
+  .db-stat-card__sub {
+    font-size: 11px;
+  }
+
   .db-lesson-card { grid-template-columns: auto 1fr; }
   .db-lesson-card__actions { grid-column: 1 / -1; justify-content: flex-end; }
-  .db-topbar__greeting strong { display: none; }
+  .db-topbar__greeting { font-size: 12px; }
   .db-content { padding: 14px; }
 }
 
@@ -1218,10 +1293,63 @@
   }
 
   .fh-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .fh-stat {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .fh-stat__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+
+  .fh-stat__icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .fh-stat__value {
+    font-size: 1.15rem;
+  }
+
+  .fh-stat__label {
+    font-size: 10px;
+    line-height: 1.25;
+    margin-top: 2px;
   }
 
   .fh-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .fh-stats {
+    gap: 6px;
+  }
+
+  .fh-stat {
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .fh-stat__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .fh-stat__value {
+    font-size: 1rem;
+  }
+
+  .fh-stat__label {
+    font-size: 9px;
   }
 }

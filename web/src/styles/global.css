@@ -83,6 +83,7 @@ input {
   backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  overflow: visible;
 }
 
 .site-header-sticky:has(.site-header.scrolled) {
@@ -269,6 +270,14 @@ input {
 .hero-title__lead,
 .hero-title__tail {
   flex: 0 0 auto;
+}
+
+.hero-title__cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 1 auto;
+  max-width: 100%;
 }
 
 .hero-word-pill {
@@ -1375,9 +1384,26 @@ input {
     order: 0;
   }
 
-  .cards-grid,
-  .footer-grid {
+  .cards-grid {
     grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 16px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-col h4 {
+    font-size: 13px;
+  }
+
+  .footer-col a {
+    font-size: 13px;
+    margin-bottom: 6px;
   }
 
   .checks {
@@ -1407,6 +1433,23 @@ input {
     align-items: stretch;
   }
 
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 14px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-col h4 {
+    font-size: 12px;
+  }
+
+  .footer-col a {
+    font-size: 12px;
+  }
+
   .cta-row .btn {
     width: 100%;
   }
@@ -1421,5 +1464,14 @@ input {
 
   .code-boxes {
     gap: 6px;
+  }
+
+  .code-boxes input {
+    max-height: 48px;
+    font-size: 1.1rem;
+  }
+
+  .auth-overlay {
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 }

@@ -166,7 +166,7 @@ function Sidebar({ profile, collapsed, onToggle, mobileOpen }) {
 
   const sidebarClass = [
     'db-sidebar',
-    collapsed && 'db-sidebar--collapsed',
+    collapsed && !mobileOpen && 'db-sidebar--collapsed',
     mobileOpen && 'db-sidebar--mobile-open'
   ].filter(Boolean).join(' ');
 
@@ -259,7 +259,18 @@ export default function DashboardLayout({ children }) {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
       supabase.from('profiles').select('full_name, display_name, role').eq('id', user.id).single()
-        .then(({ data }) => { if (data) setProfile(data); });
+        .then(({ data }) => {
+          if (data?.full_name || data?.display_name) {
+            setProfile(data);
+            return;
+          }
+          const metaName = user.user_metadata?.full_name || user.user_metadata?.name;
+          setProfile({
+            full_name: metaName || user.email?.split('@')[0] || 'Teacher',
+            display_name: metaName || null,
+            role: user.user_metadata?.role || 'teacher',
+          });
+        });
     });
   }, []);
 

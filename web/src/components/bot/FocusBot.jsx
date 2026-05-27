@@ -538,7 +538,7 @@ export default function FocusBot() {
               </div>
             </div>
 
-            <p className="bot-hint">Focus Bot can make mistakes. Verify important classroom guidance. Shift+Enter for a new line.</p>
+            <p className="bot-hint">Focus Bot can make mistakes. Verify important classroom guidance. </p>
           </div>
         </section>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { brandPaths } from '@/config';
 import './Header.css';
@@ -33,9 +34,9 @@ const NAV = [
   },
 ];
 
-function DropdownMenu({ items, visible }) {
+function DropdownMenu({ items }) {
   return (
-    <div className={`hdr-dropdown${visible ? ' hdr-dropdown--open' : ''}`} role="menu">
+    <div className="hdr-dropdown" role="menu">
       {items.map(item => (
         <a
           key={item.href + item.label}
@@ -68,6 +69,41 @@ function DropdownMenu({ items, visible }) {
   );
 }
 
+function MobileNavGroup({ label, items, onNavigate }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className={`hdr-mobile-group${open ? ' is-open' : ''}`}>
+      <button
+        type="button"
+        className="hdr-mobile-group__toggle"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+      >
+        <span>{label}</span>
+        <svg className="hdr-mobile-group__caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+        </svg>
+      </button>
+      <div className="hdr-mobile-group__items">
+        <div className="hdr-mobile-group__items-inner">
+          {items.map(d => (
+            <a
+              key={d.href + d.label}
+              href={d.href}
+              className="hdr-mobile-link"
+              onClick={() => onNavigate()}
+            >
+              {d.icon && <span className="hdr-mobile-link__icon">{d.icon}</span>}
+              {d.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function NavItem({ item, activePath }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -84,7 +120,12 @@ function NavItem({ item, activePath }) {
 
   if (item.dropdown) {
     return (
-      <div ref={ref} className="hdr-nav__item hdr-nav__item--has-dropdown" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <div
+        ref={ref}
+        className={`hdr-nav__item hdr-nav__item--has-dropdown${open ? ' is-open' : ''}`}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+      >
         <button
           className={`hdr-nav__link${isActive ? ' is-active' : ''}`}
           onClick={() => setOpen(o => !o)}
@@ -97,7 +138,9 @@ function NavItem({ item, activePath }) {
             <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
           </svg>
         </button>
-        <DropdownMenu items={item.dropdown} visible={open} />
+        <div className={`hdr-dropdown-wrap${open ? ' hdr-dropdown-wrap--open' : ''}`}>
+          <DropdownMenu items={item.dropdown} />
+        </div>
       </div>
     );
   }
@@ -126,6 +169,65 @@ function NavItem({ item, activePath }) {
 
 export default function Header({ onAuth, activePath = '/' }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setMobileOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen]);
+
+  const closeMobile = () => setMobileOpen(false);
+
+  const mobileMenu = (
+    <>
+      <button
+        type="button"
+        className="hdr-mobile-backdrop"
+        aria-label="Close menu"
+        onClick={closeMobile}
+      />
+      <nav className="hdr-mobile-panel" aria-label="Mobile">
+        <div className="hdr-mobile-panel__head">
+          <span className="hdr-mobile-panel__title">Menu</span>
+          <button type="button" className="hdr-mobile-panel__close" aria-label="Close menu" onClick={closeMobile}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div className="hdr-mobile-panel__body">
+          {NAV.map(item =>
+            item.dropdown ? (
+              <MobileNavGroup key={item.label} label={item.label} items={item.dropdown} onNavigate={closeMobile} />
+            ) : (
+              <a key={item.href} href={item.href} className="hdr-mobile-link hdr-mobile-link--top" onClick={closeMobile}>
+                {item.label}
+              </a>
+            )
+          )}
+          <div className="hdr-mobile-cta">
+            <button className="btn full" type="button" onClick={() => { onAuth('login'); closeMobile(); }}>Sign In</button>
+            <button className="btn primary full" type="button" onClick={() => { onAuth('onboarding'); closeMobile(); }}>Get Started Free</button>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
 
   return (
     <header className="site-header focusflow-header">
@@ -162,24 +264,7 @@ export default function Header({ onAuth, activePath = '/' }) {
         </div>
       </div>
 
-      {/* Mobile drawer */}
-      {mobileOpen && (
-        <div className="hdr-mobile-drawer">
-          {NAV.flatMap(item =>
-            item.dropdown
-              ? item.dropdown.map(d => (
-                  <a key={d.href + d.label} href={d.href} className="hdr-mobile-link" onClick={() => setMobileOpen(false)}>
-                    {d.icon && <span>{d.icon}</span>} {d.label}
-                  </a>
-                ))
-              : [<a key={item.href} href={item.href} className="hdr-mobile-link" onClick={() => setMobileOpen(false)}>{item.label}</a>]
-          )}
-          <div className="hdr-mobile-cta">
-            <button className="btn full" type="button" onClick={() => { onAuth('login'); setMobileOpen(false); }}>Sign In</button>
-            <button className="btn primary full" type="button" onClick={() => { onAuth('onboarding'); setMobileOpen(false); }}>Get Started Free</button>
-          </div>
-        </div>
-      )}
+      {mounted && mobileOpen && createPortal(mobileMenu, document.body)}
     </header>
   );
 }

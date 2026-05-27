@@ -296,8 +296,12 @@
     align-items: flex-start;
   }
 
-  .hero-word-pill {
-    width: 100%;
+  .hero--centered .hero-title {
+    align-items: center;
+  }
+
+  .hero--centered .hero-title__cluster {
+    justify-content: center;
   }
 }
 
@@ -318,27 +322,91 @@
     width: 100%;
     margin: 0;
   }
+
+  .hero-word-pill {
+    max-width: min(260px, calc(100vw - 140px));
+    min-height: 48px;
+    padding: 6px 14px 6px 8px;
+    font-size: clamp(1.05rem, 4.8vw, 1.3rem);
+  }
+
+  .hero-word-pill__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .hero-word-pill__icon img {
+    width: 26px;
+    height: 26px;
+  }
+
+  .hero-title__cluster {
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .hero-arrow-pill {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .hero-arrow-pill svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dark-inner--gallery {
+    padding: clamp(28px, 5vw, 40px) clamp(20px, 4vw, 28px);
+    min-height: auto;
+  }
 }
 
 @media (max-width: 560px) {
   .subscribe--launch {
-    padding: 16px 16px 20px;
+    padding: 56px 16px 20px;
   }
 
   .subscribe__mark--corner {
-    width: 34px;
-    height: 34px;
-    top: 12px;
-    left: 12px;
+    width: 32px;
+    height: 32px;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 5px;
+  }
+
+  .subscribe__copy {
+    padding-top: 4px;
+  }
+
+  .subscribe__copy h3 {
+    font-size: clamp(1.1rem, 5vw, 1.25rem);
+    line-height: 1.3;
+  }
+
+  .subscribe-typelead {
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .sub-form--large {
     flex-direction: column;
   }
 
+  .sub-form--large input {
+    flex: none;
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    font-size: 15px;
+    line-height: 1.2;
+    box-sizing: border-box;
+  }
+
   .sub-form--large .btn {
     width: 100%;
+    padding: 12px 20px;
   }
 
   .carousel-block .carousel-item {
@@ -356,5 +424,38 @@
 
   .hero--centered .hero-title {
     font-size: clamp(1.65rem, 7vw, 2.2rem);
+  }
+
+  .site-footer {
+    padding: 36px 0 24px;
+  }
+
+  .footer-grid {
+    gap: 24px;
+  }
+
+  .footer-logo {
+    height: clamp(56px, 16vw, 72px);
+    max-width: min(340px, 92vw);
+    margin-bottom: 14px;
+  }
+
+  .footer-brand p {
+    font-size: 13px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .hero-copy .lead {
+    font-size: 0.98rem;
+  }
+
+  .play-link {
+    justify-content: center;
   }
 }
