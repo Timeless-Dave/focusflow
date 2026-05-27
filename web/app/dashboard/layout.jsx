@@ -146,14 +146,11 @@ function SearchModal({ onClose, router }) {
   );
 }
 
-function Sidebar({ profile, collapsed, onToggle, mobileOpen }) {
+function Sidebar({ profile, collapsed, onToggle, mobileOpen, onSignOut }) {
   const pathname = usePathname();
-  const router   = useRouter();
 
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/');
+  const handleSignOut = () => {
+    onSignOut?.();
   };
 
   const initials = profile?.display_name ?? profile?.full_name
@@ -231,7 +228,7 @@ function Sidebar({ profile, collapsed, onToggle, mobileOpen }) {
             <div className="db-profile-role">{profile?.role === 'homeschool' ? 'Homeschool' : 'Teacher'}</div>
           </div>
         </Link>
-        <button className="db-signout-btn" onClick={handleSignOut}>
+        <button className="db-signout-btn" type="button" onClick={handleSignOut}>
           <span className="db-signout-icon"><IconLogOut /></span>
           <span className="db-signout-label">Sign Out</span>
         </button>
@@ -297,6 +294,21 @@ export default function DashboardLayout({ children }) {
     setMobileOpen(false);
   }, [pathname]);
 
+  const handleSignOut = async () => {
+    setMobileOpen(false);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      if (error) {
+        console.error('Sign out failed:', error.message);
+      }
+    } catch (err) {
+      console.error('Sign out failed:', err);
+    } finally {
+      window.location.assign('/');
+    }
+  };
+
   return (
     <div className="db-shell">
       {/* Search modal */}
@@ -307,7 +319,13 @@ export default function DashboardLayout({ children }) {
         <div style={{ position:'fixed',inset:0,zIndex:90,background:'rgba(11,18,32,0.35)' }} onClick={() => setMobileOpen(false)} />
       )}
 
-      <Sidebar profile={profile} collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} mobileOpen={mobileOpen} />
+      <Sidebar
+        profile={profile}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed(c => !c)}
+        mobileOpen={mobileOpen}
+        onSignOut={handleSignOut}
+      />
 
       <main className={`db-main${collapsed ? ' db-main--sidebar-collapsed' : ''}`}>
         {/* Top bar */}

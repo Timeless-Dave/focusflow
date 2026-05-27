@@ -295,6 +295,62 @@ export function OnboardingPanel({ onAuth, onComplete }) {
     return true;
   };
 
+  const validateStep = (step) => {
+    if (step === 1) {
+      if (!role) {
+        setError('Please choose how you will use FocusFlow.');
+        return false;
+      }
+      return true;
+    }
+
+    if (step === 2) {
+      const name = form.name.trim();
+      const email = form.email.trim();
+      if (!name) {
+        setError('Please enter your full name.');
+        return false;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setError('Please enter a valid email address.');
+        return false;
+      }
+      if (!form.password || form.password.length < 8) {
+        setError('Password must be at least 8 characters.');
+        return false;
+      }
+      return true;
+    }
+
+    if (step === 3) {
+      if (code.some(d => !d)) {
+        setError('Enter the full 6-digit verification code.');
+        return false;
+      }
+      return true;
+    }
+
+    return true;
+  };
+
+  const handleBeforeStepChange = async (from, to) => {
+    setError('');
+
+    if (to <= from) return true;
+
+    if (!validateStep(from)) return false;
+
+    if (from === 2 && to === 3) {
+      return handleSignUp();
+    }
+
+    if (from === 3 && to === 4) {
+      return handleVerifyOtp();
+    }
+
+    return true;
+  };
+
   const handleGoogle = async () => {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
@@ -312,7 +368,7 @@ export function OnboardingPanel({ onAuth, onComplete }) {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-page auth-page--onboarding">
       <AuthVisualPanel
         variant="onboarding"
         title={<>Join teachers building calmer, more focused classrooms with <span className="accent">FocusFlow</span></>}
@@ -327,24 +383,13 @@ export function OnboardingPanel({ onAuth, onComplete }) {
               backButtonText="Previous"
               nextButtonText="Continue"
               onFinalStepCompleted={handleComplete}
+              onBeforeStepChange={handleBeforeStepChange}
               stepCircleContainerClassName="focusflow-stepper"
               contentClassName="focusflow-stepper-content"
               footerClassName="focusflow-stepper-footer"
               backButtonProps={{ className: 'stepper-back-btn' }}
               nextButtonProps={{ className: 'stepper-next-btn', disabled: loading }}
-              onStepChange={async (from, to) => {
-                // Moving from step 2 → 3 triggers sign-up
-                if (from === 2 && to === 3) {
-                  const ok = await handleSignUp();
-                  if (!ok) return false;
-                }
-                // Moving from step 3 → 4 verifies OTP
-                if (from === 3 && to === 4) {
-                  const ok = await handleVerifyOtp();
-                  if (!ok) return false;
-                }
-                return true;
-              }}
+              disableStepIndicators
             >
               <Step>
                 <div className="step-panel step-panel--center">
@@ -377,7 +422,7 @@ export function OnboardingPanel({ onAuth, onComplete }) {
               </Step>
 
               <Step>
-                <div className="step-panel step-panel--center">
+                <div className="step-panel step-panel--fields">
                   <h3>Create your account</h3>
                   <p className="step-lead">Start supporting students with ADHD in minutes.</p>
                   <label htmlFor="ob-name">Full name</label>
@@ -392,7 +437,7 @@ export function OnboardingPanel({ onAuth, onComplete }) {
                       autoComplete="name"
                     />
                   </div>
-                  <label htmlFor="ob-email">Email address</label>
+                  <label htmlFor="ob-email">Email</label>
                   <div className="input-wrap">
                     <input
                       id="ob-email"

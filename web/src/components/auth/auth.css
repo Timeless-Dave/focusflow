@@ -198,9 +198,44 @@
   margin: 0 0 20px;
 }
 
+.step-panel label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--gray-500);
+  text-align: left;
+}
+
+.auth-error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.auth-error--global {
+  margin: 0 24px 12px;
+}
+
 .step-panel--center {
   text-align: center;
   padding: 16px 0 8px;
+}
+
+.step-panel--fields {
+  text-align: left;
+  padding: 16px 0 8px;
+}
+
+.step-panel--fields h3,
+.step-panel--fields .step-lead {
+  text-align: center;
 }
 
 .step-panel--center label,

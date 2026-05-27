@@ -172,6 +172,11 @@
   margin: 0 auto;
 }
 
+.db-sidebar--collapsed .db-signout-btn {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
 .db-sidebar--collapsed .db-sidebar__bottom {
   padding: 10px 6px;
   align-items: center;

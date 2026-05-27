@@ -7,6 +7,7 @@ export default function Stepper({
   children,
   initialStep = 1,
   onStepChange = () => {},
+  onBeforeStepChange,
   onFinalStepCompleted = () => {},
   stepCircleContainerClassName = '',
   stepContainerClassName = '',
@@ -29,30 +30,44 @@ export default function Stepper({
 
   const updateStep = newStep => {
     setCurrentStep(newStep);
-    if (newStep > totalSteps) {
-      onFinalStepCompleted();
-    } else {
-      onStepChange(newStep);
+    onStepChange(newStep);
+  };
+
+  const goToStep = async (nextStep) => {
+    if (nextStep === currentStep) return true;
+
+    if (onBeforeStepChange) {
+      const allowed = await onBeforeStepChange(currentStep, nextStep);
+      if (allowed === false) return false;
     }
+
+    setDirection(nextStep > currentStep ? 1 : -1);
+
+    if (nextStep > totalSteps) {
+      onFinalStepCompleted();
+      setCurrentStep(totalSteps + 1);
+      onStepChange(totalSteps + 1);
+    } else {
+      updateStep(nextStep);
+    }
+
+    return true;
   };
 
   const handleBack = () => {
     if (currentStep > 1) {
-      setDirection(-1);
-      updateStep(currentStep - 1);
+      void goToStep(currentStep - 1);
     }
   };
 
   const handleNext = () => {
     if (!isLastStep) {
-      setDirection(1);
-      updateStep(currentStep + 1);
+      void goToStep(currentStep + 1);
     }
   };
 
   const handleComplete = () => {
-    setDirection(1);
-    updateStep(totalSteps + 1);
+    void goToStep(totalSteps + 1);
   };
 
   return (
@@ -69,8 +84,8 @@ export default function Stepper({
                     step: stepNumber,
                     currentStep,
                     onStepClick: clicked => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
+                      if (clicked > currentStep) return;
+                      void goToStep(clicked);
                     }
                   })
                 ) : (
@@ -79,8 +94,8 @@ export default function Stepper({
                     disableStepIndicators={disableStepIndicators}
                     currentStep={currentStep}
                     onClickStep={clicked => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
+                      if (clicked > currentStep) return;
+                      void goToStep(clicked);
                     }}
                   />
                 )}
